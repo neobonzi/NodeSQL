@@ -1,11 +1,12 @@
 var fs = require('fs');
+var config = require('./config');
 var parser = require('./parser');
 var readline = require('readline');
 
-/** Constants **/
-var fileName = '/home/jbilous/MaybeNode/input';
 
-var readStream = fs.createReadStream(fileName);
+/** Constants **/
+
+var readStream = fs.createReadStream(config.inputPath);
 var rl = readline.createInterface({ 
    input: readStream,
    output: process.stdout,
