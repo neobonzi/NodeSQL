@@ -1,0 +1,3 @@
+MaybeSQL.People.create({"key":"name"});
+MaybeSQL.People.put({"name":"James", "hobbies":["fishing","swimming","chilling"]});
+MaybeSQL.People.get({"key":"James"});
