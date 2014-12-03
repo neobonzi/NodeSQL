@@ -5,6 +5,11 @@ var readline = require('readline');
 
 
 /** Constants **/
+var net = require('net'),
+    JsonSocket = require('json-socket');
+
+var socket = new JsonSocket(new net.Socket());
+socket.connect(config.port, config.nodes[0]);
 
 var readStream = fs.createReadStream(config.inputPath);
 var rl = readline.createInterface({ 
@@ -16,15 +21,15 @@ var rl = readline.createInterface({
 rl.on('line', function (cmd) {
    console.log('Command entered: ' + cmd);
    var query = parser.parse(cmd);
-   console.log('Collection Name is: ' + query.collection);
-   console.log('Command is: ' + query.command);
-   console.log('JSON is: ' + query.json);
 
-   // TODO: Dispatch the command
-   
+   //Dispatch the command
+   socket.sendMessage(query);
 });
 
+socket.on('message', function(message) {
+   console.log('Got a message from server: ' + message.response);
+});
 
-
-
- 
+socket.on('close', function(something) {
+   console.log('Goodbye!');
+}); 
