@@ -5,6 +5,9 @@ exports.getCollection = function(name) {
 }
 
 exports.putCollection = function(name) {
+   if (collections[name]) {
+      return collections[name];
+   }
    return collections[name] = {};
 }
 
@@ -25,7 +28,7 @@ exports.getDocument = function(colName, key) {
  * Find a document givent the collection name and a key value pair
  */
 exports.findDocument = function(colName, key, value) {
-   var collectin = collections[colName];
+   var collection = collections[colName];
    var found = {};
    var numFound = 0;
    for (var doc in collections[colName]) {
