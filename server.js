@@ -14,7 +14,7 @@ var numberOfServers = 1;
 var documentServerHash = function(id) {
    var server = 0;
    var repServer = 0;
-   if (isNaN(Number(id)) {
+   if (isNaN(Number(id))) {
       for (i = 0; i < name.length; i++) {
          server += name.charAt(i);
       }
@@ -25,7 +25,7 @@ var documentServerHash = function(id) {
    server = server % numberOfServers;
    repServer = (server + 1) % numberOfServers;
 
-   return {server, repServer};
+   return [server, repServer];
 }
 
 
@@ -36,12 +36,12 @@ server.on('connection', function(socket) {
       //socket.sendEndMessage({response: 'Thanks for your message bro'});
       var cmd = message.command;
 
-      if (cmd === "put") {
+      if (cmd == "put") {
          console.log("put method");
          servers = documentServerHash(message.collection);
-      } else if (cmd === "find") {
+      } else if (cmd == "find") {
          console.log("find method");
-      } else if (cmd === "get") {
+      } else if (cmd == "get") {
          console.log("get method");
          servers = documentServerHash(message.collection);
       } else if (cmd == "create") {
