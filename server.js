@@ -34,12 +34,15 @@ server.on('connection', function(socket) {
       var cmd = message.command;
 
       if (cmd === "put") {
+         console.log("put method");
          servers = collectionServerRank(message.collection);
       } else if (cmd === "find") {
-
+         console.log("find method");
       } else if (cmd === "get") {
+         console.log("get method");
          servers = collectionServerRank(message.collection);
       } else if (cmd == "create") {
+         console.log("create method");
          servers = collectionServerRank(message.collection);
       }
    });
