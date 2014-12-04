@@ -10,19 +10,22 @@ console.log('Server is running.');
 // Change this when we have a way to calculate this
 var numberOfServers = 1;
 
-var collectionServerHash = function(name) {
-   // determine which server to send to
-   // compute main server and replication server
-   var serverRank = 0;
-   var repServerRank = 0;
-   for (i = 0; i < name.length; i++) {
-      serverRank += name.charAt(i);
+
+var documentServerHash = function(id) {
+   var server = 0;
+   var repServer = 0;
+   if (isNaN(Number(id)) {
+      for (i = 0; i < name.length; i++) {
+         server += name.charAt(i);
+      }
+   } else {
+      server = Number(id);
    }
 
-   serverRank = serverRank % numberOfServers;
-   repServerRank = (serverRank + 1) % numberOfServers;
+   server = server % numberOfServers;
+   repServer = (server + 1) % numberOfServers;
 
-   return {serverRank, repServerRank};
+   return {server, repServer};
 }
 
 
@@ -35,15 +38,14 @@ server.on('connection', function(socket) {
 
       if (cmd === "put") {
          console.log("put method");
-         servers = collectionServerRank(message.collection);
+         servers = documentServerHash(message.collection);
       } else if (cmd === "find") {
          console.log("find method");
       } else if (cmd === "get") {
          console.log("get method");
-         servers = collectionServerRank(message.collection);
+         servers = documentServerHash(message.collection);
       } else if (cmd == "create") {
          console.log("create method");
-         servers = collectionServerRank(message.collection);
       }
    });
 });
