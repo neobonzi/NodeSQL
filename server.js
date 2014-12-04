@@ -7,13 +7,24 @@ server.listen(config.port);
 
 console.log('Server is running.');
 
+// Change this when we have a way to calculate this
+var numberOfServers = 1;
+
 var collectionServerHash = function(name) {
-   // determine which server to send to 
+   // determine which server to send to
+   // compute main server and replication server
+   var serverRank = 0;
+   var repServerRank = 0;
+   for (i = 0; i < name.length; i++) {
+      serverRank += name.charAt(i);
+   }
+
+   serverRank = serverRank % numberOfServers;
+   repServerRank = (serverRank + 1) % numberOfServers;
+
+   return {serverRank, repServerRank};
 }
 
-var getServerHash = function(id, collection) {
-   // determine which server to do the get on
-}
 
 server.on('connection', function(socket) {
    socket = new JsonSocket(socket);
@@ -23,13 +34,13 @@ server.on('connection', function(socket) {
       var cmd = message.command;
 
       if (cmd === "put") {
-
+         servers = collectionServerRank(message.collection);
       } else if (cmd === "find") {
 
       } else if (cmd === "get") {
-
+         servers = collectionServerRank(message.collection);
       } else if (cmd == "create") {
-
+         servers = collectionServerRank(message.collection);
       }
    });
 });
