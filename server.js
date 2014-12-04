@@ -28,6 +28,8 @@ server.on('connection', function(socket) {
 
       } else if (cmd === "get") {
 
+      } else if (cmd == "create") {
+
       }
    });
 });
