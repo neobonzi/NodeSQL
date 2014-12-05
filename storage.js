@@ -4,15 +4,16 @@ exports.getCollection = function(name) {
    return collections[name];
 }
 
-exports.putCollection = function(name) {
+exports.createCollection = function(name, key) {
    if (collections[name]) {
       return collections[name];
    }
-   return collections[name] = {};
+   return collections[name] = {'key' : key, 'records' : {}};
 }
 
-exports.putDocument = function(collection, doc) {
-   collection[doc.key] = doc;
+exports.putDocument = function(collectionName, doc) {
+   var collection = collections[collectionName];
+   collection[collection.keyName] = doc;
 }
 
 /**
