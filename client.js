@@ -17,7 +17,7 @@ var numberOfServers = config.nodes.length;
 // Utility function to initialize a sockets events
 var initSubscriptions = function(socket) {
    socket.on('message', function(message) {
-      console.log('Got a message from server: ' + message.response);
+      console.log('Got a message from server: ' + JSON.stringify(message.response));
    });
 
    socket.on('close', function(something) {

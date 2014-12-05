@@ -11,12 +11,20 @@ exports.createCollection = function(name, key) {
    return collections[name] = {'key' : key, 'records' : {}};
 }
 
+exports.collectionExists = function(collectionName) {
+   return collections.hasOwnProperty(collectionName); 
+}
+
 exports.putDocument = function(collectionName, doc) {
    var collection = collections[collectionName];
    collection[doc[collection.key]] = doc;
 }
 
 exports.getKeyForCollection = function(collectionName) {
+   if(!'collectionName' in collections)
+   {
+      return undefined;
+   }
    return collections[collectionName]['key'];
 }
 
