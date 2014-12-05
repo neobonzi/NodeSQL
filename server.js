@@ -26,8 +26,8 @@ server.on('connection', function(socket) {
       } else if (cmd == "get") {
          console.log("get method");
          var keyName = datamanager.getKeyForCollection(message.collection);
-         var doc = datamanager.getDocument(message.collection, message.json[keyName];
-          
+         var doc = datamanager.getDocument(message.collection, message.json[keyName]);
+         socket.write(doc); 
       } else if (cmd == "create") {
          console.log("create method");
       }
