@@ -8,9 +8,22 @@ var readline = require('readline');
 var net = require('net'),
     JsonSocket = require('json-socket');
 
-var socket = new JsonSocket(new net.Socket());
-socket.connect(config.port, config.nodes[0]);
+// Stores an array of server connections
+var nodes = [];
 
+//Number of curently active servers
+var numberOfServers = config.nodes.length;
+
+// Create a connection for every node in our config
+config.nodes.forEach(function(nodeName) {
+   var socket = new JsonSocket(new net.Socket());
+   socket.connect(config.port, nodeName);
+   nodes.push(socket);
+   initSubscriptions(socket);
+});
+
+
+// Begin command I/O
 var readStream = fs.createReadStream(config.inputPath);
 var rl = readline.createInterface({ 
    input: readStream,
@@ -26,10 +39,12 @@ rl.on('line', function (cmd) {
    socket.sendMessage(query);
 });
 
-socket.on('message', function(message) {
-   console.log('Got a message from server: ' + message.response);
-});
+var initSubscriptions(socket) {
+   socket.on('message', function(message) {
+      console.log('Got a message from server: ' + message.response);
+   });
 
-socket.on('close', function(something) {
-   console.log('Goodbye!');
-}); 
+   socket.on('close', function(something) {
+      console.log('Goodbye!');
+   }); 
+};

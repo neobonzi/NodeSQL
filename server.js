@@ -8,7 +8,7 @@ server.listen(config.port);
 console.log('Server is running.');
 
 // Change this when we have a way to calculate this
-var numberOfServers = 1;
+var numberOfServers = config.servers.length;
 
 
 var documentServerHash = function(id) {
