@@ -43,21 +43,18 @@ if(cluster.isMaster) {
    var workerSocket = new net.Socket();
    var workerSocket = new JsonSocket(workerSocket); 
       queue.process('query', 1, function(job, done) {
-         console.log('worker pulling somethign off of queue');
          var message = job.data;
          var cmd = message.command;
          if (cmd == "create") {
-            console.log("create method");
+            // Pass the collection name and the JSON Payload as an object to the data manager
+            // Note that json must be placed in parentheses to be eval'd correctly
             dataManager.createCollection(message.collection, eval("(" + message.json + ")").key);
-            console.log('created collection');
             done();
          } else if (cmd == "put") {
-            console.log("put method");
             console.log(dataManager.getCollections()); 
             if(dataManager.collectionExists(message.collection))
             {
 	       dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
-               console.log("put done, collections is now" + JSON.stringify(dataManager.getCollections()));
                done();
             } else {
                queue.create('query', {message : message}).attempts(config.numberRetries).save;
@@ -66,21 +63,17 @@ if(cluster.isMaster) {
          } else if (cmd == "find") {
             console.log("find method");
          } else if (cmd == "get") {
-            console.log("get method");
             if(dataManager.collectionExists(message.collection))
             {  
                var jsonObject = eval("(" + message.json + ")");
                var keyName = dataManager.getKeyForCollection(message.collection);
                var doc = dataManager.getDocument(message.collection, jsonObject.key);
-               console.log("found doc: " + JSON.stringify(doc));
                done(null, doc); 
    
             } else {
                console.log('shit');
                return done(new Error('Can\'t get, collection doesn\'t exists yet')); 
             } 
-         } else if (cmd == "create") {
-            console.log("create method");
          }
       });
 }
