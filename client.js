@@ -16,13 +16,17 @@ var numberOfServers = config.nodes.length;
 
 // Utility function to initialize a sockets events
 var initSubscriptions = function(socket) {
-   socket.on('message', function(message) {
-      console.log('Got a message from server: ' + JSON.stringify(message.response));
-   });
+   socket.on('connect', function() {
+      socket = new JsonSocket(socket);
+   
+      socket.on('message', function(message) {
+         console.log('Got a message from server: ' + JSON.stringify(message));
+      });
 
-   socket.on('close', function(something) {
-      console.log('Goodbye!');
-   }); 
+      socket.on('close', function(something) {
+         console.log('Goodbye!');
+      }); 
+   });
 };
 
 // Add a hashCode function to String for use in overall hashing
