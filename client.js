@@ -43,7 +43,7 @@ String.prototype.hashCode = function() {
 }
 
 // Utility function to hash a command
-var documentServerHash = function(message) {
+var documentServerHash = function(json) {
    var server = json.hashCode();
    return [server, (server + 1) % numberOfServers];
 }
