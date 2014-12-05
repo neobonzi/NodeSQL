@@ -1,3 +1,16 @@
 MaybeSQL.People.create({"key":"name"});
+MaybeSQL.Animals.create({"key":"type"});
+MaybeSQL.Animals.put({type:"Cat", sound: "Meow"});
+MaybeSQL.Animals.put({type:"Dog", sound: "Bark"});
+MaybeSQL.People.put({name:"Tom"});
+MaybeSQL.People.put({name:"Dick", likes:"Games"});
+MaybeSQL.People.put({name:"Harry"});
+MaybeSQL.People.put({name:"Jane"});
+MaybeSQL.Animals.put({type:"Pig", sound: "Oink"});
+MaybeSQL.Animals.put({type:"Squirrel", sound: "idno"});
+MaybeSQL.Animals.put({type:"Monkey", sound: "OohOohAhAh"});
+MaybeSQL.People.put({name:"Pete"});
+MaybeSQL.Animals.put({type:"Fish", sound: "Bloop"});
 MaybeSQL.People.put({name:"James", hobbies:["fishing","swimming","chilling"]});
+MaybeSQL.Animals.get({key:"Pig"});
 MaybeSQL.People.get({key:"James"});

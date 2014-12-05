@@ -43,7 +43,7 @@ String.prototype.hashCode = function() {
 }
 
 // Utility function to hash a command
-var documentServerHash = function(json) {
+var documentServerHash = function(message) {
    var server = json.hashCode();
    return [server, (server + 1) % numberOfServers];
 }
@@ -67,7 +67,6 @@ var rl = readline.createInterface({
  });
 
 rl.on('line', function (cmd) {
-   console.log('Command entered: ' + cmd);
    var query = parser.parse(cmd);
 
    //Dispatch the command
