@@ -1,5 +1,9 @@
 var collections = {};
 
+exports.getCollections = function() {
+   return collections;
+}
+
 exports.getCollection = function(name) {
    return collections[name];
 }
@@ -8,16 +12,19 @@ exports.createCollection = function(name, key) {
    if (collections[name]) {
       return collections[name];
    }
-   return collections[name] = {'key' : key, 'records' : {}};
+   return collections[name] = {key : key, records : {}};
 }
 
 exports.collectionExists = function(collectionName) {
-   return collections.hasOwnProperty(collectionName); 
+   return collectionName in collections; 
 }
 
 exports.putDocument = function(collectionName, doc) {
    var collection = collections[collectionName];
-   collection[doc[collection.key]] = doc;
+   console.log('trying to put doc');
+   console.log('collection is ' + JSON.stringify(collection));
+   console.log('collection.key is ' + collection.key);
+   collection.records[doc[collection.key]] = doc;
 }
 
 exports.getKeyForCollection = function(collectionName) {
@@ -32,7 +39,8 @@ exports.getKeyForCollection = function(collectionName) {
  * See if a doc with the given key exists in a collection
  */ 
 exports.getDocument = function(collectionName, key) {
-   return collections[collectionName][key];
+   console.log("looking for " + key + " in " + collectionName);
+   return collections[collectionName].records[key];
 }
 
 /**

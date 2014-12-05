@@ -21,28 +21,36 @@ if(cluster.isMaster) {
    server.on('connection', function(socket) {
       socket = new JsonSocket(socket);
       socket.on('message', function(message) {
-         var cmd = message.command;
-         queue.create('query', {message : message}).save();
-         console.log('added query to queue');
+         if(message.command == 'get' || message.command == 'put') {
+            queue.create('query', message).attempts(5).save();
+         } else {
+            queue.create('query', message).save();
+            console.log('added query to queue');
+         }
       });
    });
 } else {
    var queue = kue.createQueue();
    var workerSocket = new net.Socket();
-
+   var workerSocket = new JsonSocket(workerSocket); 
    workerSocket.connect(config.port, 'localhost', function() {
       console.log('worker started');
       queue.process('query', 1, function(job, done) {
-         var message = job.message;
+         console.log('worker pulling somethign off of queue');
+         var message = job.data;
+         var cmd = message.command;
          if (cmd == "create") {
             console.log("create method");
-            dataManager.createCollection(message.collectionName, message.json.key);
+            dataManager.createCollection(message.collection, eval("(" + message.json + ")").key);
+            console.log('created collection');
+            done();
          } else if (cmd == "put") {
             console.log("put method");
-            
+            console.log(dataManager.getCollections()); 
             if(dataManager.collectionExists(message.collection))
             {
-	       dataManager.putDocument(message.collection, message.json);
+	       dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
+               console.log("put done, collections is now" + JSON.stringify(dataManager.getCollections()));
                done();
             } else {
                queue.create('query', {message : message}).attempts(config.numberRetries).save;
@@ -54,12 +62,15 @@ if(cluster.isMaster) {
             console.log("get method");
             if(dataManager.collectionExists(message.collection))
             {  
-               var keyName = datamanager.getKeyForCollection(message.collection);
-               var doc = datamanager.getDocument(message.collection, message.json[keyName]);
-               workerSocket.write(doc); 
+               var jsonObject = eval("(" + message.json + ")");
+               var keyName = dataManager.getKeyForCollection(message.collection);
+               var doc = dataManager.getDocument(message.collection, jsonObject.key);
+               console.log("found doc: " + JSON.stringify(doc));
+               workerSocket.sendMessage(doc); 
                done(); 
    
             } else {
+               console.log('shit');
                return done(new Error('Can\'t get, collection doesn\'t exists yet')); 
             } 
          } else if (cmd == "create") {
