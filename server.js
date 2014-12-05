@@ -6,9 +6,9 @@ var config = require('./config'),
     kue = require('kue');
 
 
-console.log('Server is running.');
 
 if(cluster.isMaster) {
+   console.log('Welcome to NodeSQL');
    var server = net.createServer();
    server.listen(config.port);
 
@@ -21,7 +21,6 @@ if(cluster.isMaster) {
    server.on('connection', function(socket) {
       socket = new JsonSocket(socket);
       socket.on('message', function(message) {
-         console.log(JSON.stringify(message));
          if(message.command == 'get' || message.command == 'put') {
             var job = queue.create('query', message);
 
@@ -48,11 +47,9 @@ if(cluster.isMaster) {
          if (cmd == "create") {
             // Pass the collection name and the JSON Payload as an object to the data manager
             // Note that json must be placed in parentheses to be eval'd correctly
-            console.log("evaling " + message.json);
             dataManager.createCollection(message.collection, eval("(" + message.json + ")").key);
             done();
          } else if (cmd == "put") {
-            console.log(dataManager.getCollections()); 
             if(dataManager.collectionExists(message.collection))
             {
 	       dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
@@ -62,7 +59,6 @@ if(cluster.isMaster) {
                return done(new Error('Can\t put, collection doesn\'t exist yet'));
             }
          } else if (cmd == "find") {
-            console.log("find method");
          } else if (cmd == "get") {
             if(dataManager.collectionExists(message.collection))
             {  
@@ -72,7 +68,6 @@ if(cluster.isMaster) {
                done(null, doc); 
    
             } else {
-               console.log('shit');
                return done(new Error('Can\'t get, collection doesn\'t exists yet')); 
             } 
          }

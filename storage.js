@@ -21,9 +21,6 @@ exports.collectionExists = function(collectionName) {
 
 exports.putDocument = function(collectionName, doc) {
    var collection = collections[collectionName];
-   console.log('trying to put doc');
-   console.log('collection is ' + JSON.stringify(collection));
-   console.log('collection.key is ' + collection.key);
    collection.records[doc[collection.key]] = doc;
 }
 
@@ -39,7 +36,6 @@ exports.getKeyForCollection = function(collectionName) {
  * See if a doc with the given key exists in a collection
  */ 
 exports.getDocument = function(collectionName, key) {
-   console.log("looking for " + key + " in " + collectionName);
    return collections[collectionName].records[key];
 }
 

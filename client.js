@@ -23,7 +23,6 @@ var initSubscriptions = function(socket) {
       socket = new JsonSocket(socket);
    
       socket.on('message', function(message) {
-         console.log(socket);
          console.log('NodeSQL Responds: ' + JSON.stringify(message));
       });
 
