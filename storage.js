@@ -16,13 +16,15 @@ exports.putDocument = function(collectionName, doc) {
    collection[doc[collection.key]] = doc;
 }
 
+exports.getKeyForCollection = function(collectionName) {
+   return collections[collectionName]['key'];
+}
+
 /**
  * See if a doc with the given key exists in a collection
  */ 
-exports.getDocument = function(colName, key) {
-   if (col[colName] != null && (col[colName])[key] != null) {
-      return (col[colName])[key];
-   }
+exports.getDocument = function(collectionName, key) {
+   return collections[collectionName][key];
 }
 
 /**
