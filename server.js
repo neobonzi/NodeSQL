@@ -48,6 +48,7 @@ if(cluster.isMaster) {
          if (cmd == "create") {
             // Pass the collection name and the JSON Payload as an object to the data manager
             // Note that json must be placed in parentheses to be eval'd correctly
+            console.log("evaling " + message.json);
             dataManager.createCollection(message.collection, eval("(" + message.json + ")").key);
             done();
          } else if (cmd == "put") {
