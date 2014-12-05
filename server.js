@@ -1,6 +1,7 @@
 var config = require('./config'),
     net = require('net'),
-    JsonSocket = require('json-socket');
+    JsonSocket = require('json-socket'),
+    dataManager = require('./storage');
 
 var server = net.createServer();
 server.listen(config.port);
@@ -16,13 +17,14 @@ var numberOfServers = config.servers.length;
 server.on('connection', function(socket) {
    socket = new JsonSocket(socket);
    socket.on('message', function(message) {
-      console.log('Holy shit, I got a message:' + JSON.stringify(message));
-      //socket.sendEndMessage({response: 'Thanks for your message bro'});
       var cmd = message.command;
 
-      if (cmd == "put") {
+      if (cmd == "create") {
+         console.log("create method");
+         dataManager.createCollection(message.collectionName, message.json.key);
+      } else if (cmd == "put") {
          console.log("put method");
-         servers = documentServerHash(message.collection);
+         dataManager.putDocument(message.collection, message.json); 
       } else if (cmd == "find") {
          console.log("find method");
       } else if (cmd == "get") {
