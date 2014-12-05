@@ -8,11 +8,7 @@ server.listen(config.port);
 
 console.log('Server is running.');
 
-// Change this when we have a way to calculate this
-var numberOfServers = config.servers.length;
-
-
-
+var numberOfServers = config.nodes.length;
 
 server.on('connection', function(socket) {
    socket = new JsonSocket(socket);
@@ -29,7 +25,9 @@ server.on('connection', function(socket) {
          console.log("find method");
       } else if (cmd == "get") {
          console.log("get method");
-         servers = documentServerHash(message.collection);
+         var keyName = datamanager.getKeyForCollection(message.collection);
+         var doc = datamanager.getDocument(message.collection, message.json[keyName];
+          
       } else if (cmd == "create") {
          console.log("create method");
       }

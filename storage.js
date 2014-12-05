@@ -13,7 +13,7 @@ exports.createCollection = function(name, key) {
 
 exports.putDocument = function(collectionName, doc) {
    var collection = collections[collectionName];
-   collection[collection.keyName] = doc;
+   collection[doc[collection.key]] = doc;
 }
 
 /**
