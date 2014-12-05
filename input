@@ -12,5 +12,5 @@ MaybeSQL.Animals.put({type:"Monkey", sound: "OohOohAhAh"});
 MaybeSQL.People.put({name:"Pete"});
 MaybeSQL.Animals.put({type:"Fish", sound: "Bloop"});
 MaybeSQL.People.put({name:"James", hobbies:["fishing","swimming","chilling"]});
-MaybeSQL.Animals.get({key:"Pig"});
-MaybeSQL.People.get({key:"James"});
+MaybeSQL.Animals.get({type:"Pig"});
+MaybeSQL.People.get({name:"James"});

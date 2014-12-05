@@ -68,7 +68,7 @@ if(cluster.isMaster) {
             {  
                var jsonObject = eval("(" + message.json + ")");
                var keyName = dataManager.getKeyForCollection(message.collection);
-               var doc = dataManager.getDocument(message.collection, jsonObject.key);
+               var doc = dataManager.getDocument(message.collection, jsonObject[keyName]);
                done(null, doc); 
    
             } else {

@@ -14,6 +14,9 @@ var nodes = [];
 //Number of curently active servers
 var numberOfServers = config.nodes.length;
 
+// Collection keys
+var collectionKeys = {};
+
 // Utility function to initialize a sockets events
 var initSubscriptions = function(socket) {
    socket.on('connect', function() {
@@ -43,8 +46,17 @@ String.prototype.hashCode = function() {
 }
 
 // Utility function to hash a command
-var documentServerHash = function(json) {
-   var server = json.hashCode();
+var documentServerHash = function(query) {
+   console.log('hashing ' + JSON.stringify(query));
+   var jsonObject = eval('(' + query.json + ')');
+   var collectionName = query.collection;
+   console.log('collection name ' + collectionName);
+   var collectionKey  = collectionKeys[collectionName];
+   console.log('collection key ' + collectionKey);
+   console.log('json object ' + JSON.stringify(jsonObject))
+   var collectionKeyValue = jsonObject[collectionKey];
+   console.log('collection key value ' + collectionKeyValue);
+   var server = (collectionName.hashCode() + collectionKey.hashCode() + collectionKeyValue.hashCode()) % numberOfServers;
    return [server, (server + 1) % numberOfServers];
 }
 
@@ -68,8 +80,20 @@ var rl = readline.createInterface({
 
 rl.on('line', function (cmd) {
    var query = parser.parse(cmd);
-
-   //Dispatch the command
-   nodes[documentServerHash(query.json)[0]].sendMessage(query); 
+   
+   // Save the collection keys for hashing purposes
+   // Distribute a collection creation to all nodes
+   if(query.command == 'create') {
+      var jsonObject = eval('(' + query.json + ')'); 
+      collectionKeys[query.collection] = jsonObject['key'];
+      console.log('collectionKeys is now ' + JSON.stringify(collectionKeys));
+      nodes.forEach(function(node) {
+         console.log('sending a create query');
+         node.sendMessage(query);
+      });
+   } else {
+      //Dispatch the command
+      nodes[documentServerHash(query)[0]].sendMessage(query);
+   }
 });
 
