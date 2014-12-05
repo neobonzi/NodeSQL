@@ -1,7 +1,7 @@
 var config = {};
 
-config.nodes = ['cslvm31'];
+config.nodes = ['cslvm32'];
 config.port =  424242;
-config.inputPath = '/home/jbilous/MaybeNode/input';
+config.inputPath = '/home/jbilous/NodeSQL/input';
 //config.inputPath = '/Users/brandon/Code/560/NodeSQL/input';
 module.exports = config;

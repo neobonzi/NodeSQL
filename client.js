@@ -14,6 +14,37 @@ var nodes = [];
 //Number of curently active servers
 var numberOfServers = config.nodes.length;
 
+// Utility function to initialize a sockets events
+var initSubscriptions = function(socket) {
+   socket.on('message', function(message) {
+      console.log('Got a message from server: ' + message.response);
+   });
+
+   socket.on('close', function(something) {
+      console.log('Goodbye!');
+   }); 
+};
+
+// Add a hashCode function to String for use in overall hashing
+// Lifted from http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery
+String.prototype.hashCode = function() {
+   var hash = 0, i, chr, len;
+   if (this.length == 0) return hash;
+   for(i = 0, len < this.length; i < len; i++) {
+      chr = this.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0;
+   }
+   return hash;
+}
+
+// Utility function to hash a command
+var documentServerHash = function(json) {
+   var server = json.hashCode();
+   return [server, (server + 1) % numberOfServers];
+}
+
+
 // Create a connection for every node in our config
 config.nodes.forEach(function(nodeName) {
    var socket = new JsonSocket(new net.Socket());
@@ -36,15 +67,6 @@ rl.on('line', function (cmd) {
    var query = parser.parse(cmd);
 
    //Dispatch the command
-   socket.sendMessage(query);
+   nodes[documentServerHash(query.json)[0]].sendMessage(query); 
 });
 
-var initSubscriptions(socket) {
-   socket.on('message', function(message) {
-      console.log('Got a message from server: ' + message.response);
-   });
-
-   socket.on('close', function(something) {
-      console.log('Goodbye!');
-   }); 
-};
