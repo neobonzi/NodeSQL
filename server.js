@@ -45,6 +45,7 @@ if(cluster.isMaster) {
          var message = job.data;
          var cmd = message.command;
          if (cmd == "create") {
+            console.log("creating collection");
             // Pass the collection name and the JSON Payload as an object to the data manager
             // Note that json must be placed in parentheses to be eval'd correctly
             dataManager.createCollection(message.collection, eval("(" + message.json + ")").key);
@@ -52,6 +53,7 @@ if(cluster.isMaster) {
          } else if (cmd == "put") {
             if(dataManager.collectionExists(message.collection))
             {
+               console.log("putting a document into" + message.collection);
 	       dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
                done();
             } else {

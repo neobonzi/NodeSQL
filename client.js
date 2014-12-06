@@ -82,6 +82,7 @@ rl.on('line', function (cmd) {
       var jsonObject = eval('(' + query.json + ')'); 
       collectionKeys[query.collection] = jsonObject['key'];
       nodes.forEach(function(node) {
+         console.log("putting record " + JSON.stringify(query));
          node.sendMessage(query);
       });
    } else {
