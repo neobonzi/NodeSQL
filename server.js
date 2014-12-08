@@ -54,7 +54,7 @@ if(cluster.isMaster) {
             if(dataManager.collectionExists(message.collection))
             {
                console.log("putting a document into" + message.collection);
-	       dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
+              dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
                done();
             } else {
                queue.create('query', {message : message}).attempts(config.numberRetries).save;
@@ -63,16 +63,16 @@ if(cluster.isMaster) {
          } else if (cmd == "find") {
             var jsonObject = eval("(" + message.json + ")");
             var foundObjects = []
+
             for(key in jsonObject) {
                if(jsonObject.hasOwnProperty(key)) {
                   var foundObjects = dataManager.findDocument(message.collection, key, jsonObject[key]);
                }
-            }
-             
-            done(null, foundObjects);
+            } 
+            done(null, {results : foundObjects});
          } else if (cmd == "get") {
             if(dataManager.collectionExists(message.collection))
-            {  
+            { 
                var jsonObject = eval("(" + message.json + ")");
                var keyName = dataManager.getKeyForCollection(message.collection);
                var doc = dataManager.getDocument(message.collection, jsonObject[keyName]);

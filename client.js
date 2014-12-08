@@ -75,7 +75,7 @@ var rl = readline.createInterface({
 
 rl.on('line', function (cmd) {
    var query = parser.parse(cmd);
-   
+   console.log(query.command); 
    // Save the collection keys for hashing purposes
    // Distribute a collection creation to all nodes
    if(query.command == 'create') {
@@ -85,6 +85,11 @@ rl.on('line', function (cmd) {
          console.log("putting record " + JSON.stringify(query));
          node.sendMessage(query);
       });
+   } else if(query.command == 'find') {
+    console.log("else if"); 
+    for(node in nodes) {
+        node.sendMessage(query);
+     }
    } else {
       //Dispatch the command
       var hashCode = documentServerHash(query)[0];

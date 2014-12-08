@@ -1,3 +1,3 @@
-MaybeSQL.People.create({"key":"name"});
+MaybeSQL.Animals.create({"key":"name"});
 MaybeSQL.Animals.put({type:"Cat", sound: "Meow"});
 MaybeSQL.Animals.find({sound : "Meow"});
