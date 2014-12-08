@@ -1,6 +1,6 @@
 var config = {};
 
-config.nodes = ['localhost'];
+config.nodes = ['cslvm32', 'cslvm33', 'cslvm34'];
 config.port =  524244;
 config.numberRetries = 5;
 config.clientServer = 'localhost';
