@@ -61,6 +61,15 @@ if(cluster.isMaster) {
                return done(new Error('Can\t put, collection doesn\'t exist yet'));
             }
          } else if (cmd == "find") {
+            var jsonObject = eval("(" + message.json + ")");
+            var foundObjects = []
+            for(key in jsonObject) {
+               if(jsonObject.hasOwnProperty(key)) {
+                  var foundObjects = dataManager.findDocument(message.collection, key, jsonObject[key]);
+               }
+            }
+             
+            done(null, foundObjects);
          } else if (cmd == "get") {
             if(dataManager.collectionExists(message.collection))
             {  

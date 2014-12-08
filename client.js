@@ -88,6 +88,7 @@ rl.on('line', function (cmd) {
    } else {
       //Dispatch the command
       var hashCode = documentServerHash(query)[0];
+      console.log("Putting record into node " + hashCode);
       nodes[hashCode].sendMessage(query);
    }
 });
