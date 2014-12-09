@@ -2,7 +2,14 @@ var fs = require('fs');
 var config = require('./config');
 var parser = require('./parser');
 var readline = require('readline');
+var winston = require('winston');
+var path = require ('path');
 
+var logger = new (winston.Logger)({
+      transports: [
+         new (winston.transports.File)({ filename: path.resolve(__dirname, 'client_output.log'), timestamp : true })
+      ]
+   });
 
 /** Constants **/
 var net = require('net'),
@@ -23,7 +30,7 @@ var initSubscriptions = function(socket) {
       socket = new JsonSocket(socket);
    
       socket.on('message', function(message) {
-         console.log('NodeSQL Responds: ' + JSON.stringify(message));
+         logger.info('RESPONSE [ data: ' + JSON.stringify(message) + ' ] ');
       });
 
       socket.on('close', function(something) {
@@ -75,24 +82,32 @@ var rl = readline.createInterface({
 
 rl.on('line', function (cmd) {
    var query = parser.parse(cmd);
-   console.log(query.command); 
    // Save the collection keys for hashing purposes
    // Distribute a collection creation to all nodes
    if(query.command == 'create') {
       var jsonObject = eval('(' + query.json + ')'); 
       collectionKeys[query.collection] = jsonObject['key'];
       nodes.forEach(function(node) {
-         console.log("putting record " + JSON.stringify(query));
+         logger.info("CREATE [ key : " + jsonObject['key'] + " ] ");
          node.sendMessage(query);
       });
    } else if(query.command == 'find') {
     nodes.forEach(function(node) {
-        node.sendMessage(query);
+         var jsonObject = eval('(' + query.json + ')');
+         logger.info("FIND [ collection_name : " + query.collection + ", key : " + Object.keys(jsonObject)[0] + ", value : " + jsonObject[Object.keys(jsonObject)[0]] + " ] " ); 
+         node.sendMessage(query);
      });
    } else {
       //Dispatch the command
       var hashCode = documentServerHash(query)[0];
-      console.log("Putting record into node " + hashCode);
+       
+      if(query.command == 'get') {
+         var jsonObject = eval('(' + query.json + ')');
+         logger.info("GET [ node: " + hashCode + ", collection_name : " + query.collection + ", key : " + jsonObject[Object.keys(jsonObject)[0]] + " ] ");
+      } else if (query.command == 'put') {
+         var jsonObject = eval('(' + query.json + ')');
+         logger.info("PUT [ node: " + hashCode + ", collection_name : " + query.collection + " ] ");
+      }
       nodes[hashCode].sendMessage(query);
    }
 });
