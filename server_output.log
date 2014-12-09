@@ -27,3 +27,9 @@
 {"level":"info","message":"PUT [ key : Monkey, collection_size: 182 ] ","timestamp":"2014-12-09T03:03:02.007Z"}
 {"level":"info","message":"FIND [ key : sound, collection_size: 210, time_taken: NaNs] ","timestamp":"2014-12-09T03:03:02.019Z"}
 {"level":"info","message":"GET [ key : Cat ]","timestamp":"2014-12-09T03:03:02.030Z"}
+{"level":"info","message":"CREATE [ collection_name : Animals ] ","timestamp":"2014-12-09T03:33:24.941Z"}
+{"level":"info","message":"PUT [ key : Cat, collection_size: 38 ] ","timestamp":"2014-12-09T03:33:24.950Z"}
+{"level":"info","message":"PUT [ key : Dog, collection_size: 96 ] ","timestamp":"2014-12-09T03:33:24.955Z"}
+{"level":"info","message":"PUT [ key : Monkey, collection_size: 182 ] ","timestamp":"2014-12-09T03:33:24.968Z"}
+{"level":"info","message":"FIND [ key : sound, collection_size: 210, time_taken: NaNs] ","timestamp":"2014-12-09T03:33:24.990Z"}
+{"level":"info","message":"GET [ key : Cat ]","timestamp":"2014-12-09T03:33:25.017Z"}
