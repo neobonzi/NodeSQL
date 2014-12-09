@@ -86,10 +86,9 @@ rl.on('line', function (cmd) {
          node.sendMessage(query);
       });
    } else if(query.command == 'find') {
-    console.log("else if"); 
-    for(node in nodes) {
+    nodes.forEach(function(node) {
         node.sendMessage(query);
-     }
+     });
    } else {
       //Dispatch the command
       var hashCode = documentServerHash(query)[0];

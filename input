@@ -1,3 +1,6 @@
-MaybeSQL.Animals.create({"key":"name"});
+MaybeSQL.Animals.create({"key":"type"});
 MaybeSQL.Animals.put({type:"Cat", sound: "Meow"});
+MaybeSQL.Animals.put({type:"Dog", sound: "Meow", outfit: "ugly"});
+MaybeSQL.Animals.put({type:"Monkey", sound: "OohOoh AhhAhh", friend: "Cat"});
 MaybeSQL.Animals.find({sound : "Meow"});
+MaybeSQL.Animals.get({type:"Cat"});
