@@ -1,4 +1,19 @@
+var winston = require('winston'),
+    path    = require('path'),
+    sizeof  = require('sizeof');
+
 var collections = {};
+
+var logger = new (winston.Logger)({
+    transports: [
+      new (winston.transports.File)({ filename: path.resolve(__dirname, 'server_output.log'), timestamp : true })
+    ]
+  });
+
+var elapsedTime = function(startDate, endDate) {
+      return (((new Date() - startDate)/ 1000) % 60) + 's';
+}
+
 
 exports.getCollections = function() {
    return collections;
@@ -12,6 +27,8 @@ exports.createCollection = function(name, key) {
    if (collections[name]) {
       return collections[name];
    }
+
+   logger.info('CREATE [ collection_name : ' + name + ' ] ');
    return collections[name] = {key : key, records : {}};
 }
 
@@ -22,6 +39,8 @@ exports.collectionExists = function(collectionName) {
 exports.putDocument = function(collectionName, doc) {
    var collection = collections[collectionName];
    collection.records[doc[collection.key]] = doc;
+   
+   logger.info('PUT [ key : ' + doc[collection.key] + ', collection_size: ' + sizeof.sizeof(collection.records) + ' ] ');
 }
 
 exports.getKeyForCollection = function(collectionName) {
@@ -36,6 +55,8 @@ exports.getKeyForCollection = function(collectionName) {
  * See if a doc with the given key exists in a collection
  */ 
 exports.getDocument = function(collectionName, key) {
+   
+   logger.info('GET [ key : ' + key + ' ]');
    return collections[collectionName].records[key];
 }
 
@@ -44,12 +65,17 @@ exports.getDocument = function(collectionName, key) {
  */
 exports.findDocument = function(colName, key, value) {
    var collection = collections[colName];
-   var found = {};
+   var found = [];
    var numFound = 0;
-   for (var doc in collections[colName]) {
+   var startTime = Date();
+   for(colKey in collections[colName].records) {
+      var doc = collections[colName].records[colKey];
       if(doc.hasOwnProperty(key) && doc[key] === value) {
          found[numFound++] = doc;
       }
    }
+
+   logger.info('FIND [ key : ' + key + ', collection_size: ' + sizeof.sizeof(collection) + ', time_taken: ' + elapsedTime(startTime, new Date()) + '] ');
    
+   return found; 
 }

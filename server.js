@@ -3,8 +3,12 @@ var config = require('./config'),
     JsonSocket = require('json-socket'),
     dataManager = require('./storage'),
     cluster = require('cluster'),
-    kue = require('kue');
+    kue = require('kue'),
+    path = require('path');
 
+var elapsedTime = function(startDate, endDate) {
+      return (((new Date() - startDate)/ 1000) % 60) + 's';
+}
 
 
 if(cluster.isMaster) {
@@ -21,10 +25,12 @@ if(cluster.isMaster) {
    server.on('connection', function(socket) {
       socket = new JsonSocket(socket);
       socket.on('message', function(message) {
-         if(message.command == 'get' || message.command == 'put') {
+         if(message.command == 'get' || message.command == 'find') {
+
             var job = queue.create('query', message);
 
-            if(message.command == 'get') {
+            if(message.command == 'get' || message.command == 'find') {
+                
                job.on('complete', function(result) {
                   socket.sendMessage(result);
                });
@@ -45,7 +51,6 @@ if(cluster.isMaster) {
          var message = job.data;
          var cmd = message.command;
          if (cmd == "create") {
-            console.log("creating collection");
             // Pass the collection name and the JSON Payload as an object to the data manager
             // Note that json must be placed in parentheses to be eval'd correctly
             dataManager.createCollection(message.collection, eval("(" + message.json + ")").key);
@@ -53,8 +58,7 @@ if(cluster.isMaster) {
          } else if (cmd == "put") {
             if(dataManager.collectionExists(message.collection))
             {
-               console.log("putting a document into" + message.collection);
-              dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
+               dataManager.putDocument(message.collection, eval("(" + message.json + ")"));
                done();
             } else {
                queue.create('query', {message : message}).attempts(config.numberRetries).save;
@@ -62,14 +66,17 @@ if(cluster.isMaster) {
             }
          } else if (cmd == "find") {
             var jsonObject = eval("(" + message.json + ")");
-            var foundObjects = []
+            var foundObjects = [];
 
+            var startTime = new Date(); 
+            //This is just a way to get the only key in the json object withut knowing its name, only does 1 iteration.
             for(key in jsonObject) {
                if(jsonObject.hasOwnProperty(key)) {
                   var foundObjects = dataManager.findDocument(message.collection, key, jsonObject[key]);
                }
-            } 
-            done(null, {results : foundObjects});
+            }
+            
+            done(null, {searchTerm: jsonObject[key], timeTaken : elapsedTime(startTime, new Date()), results : foundObjects});
          } else if (cmd == "get") {
             if(dataManager.collectionExists(message.collection))
             { 
