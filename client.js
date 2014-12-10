@@ -99,16 +99,23 @@ rl.on('line', function (cmd) {
      });
    } else {
       //Dispatch the command
-      var hashCode = documentServerHash(query)[0];
+      var hashCodes = documentServerHash(query);
+      var mainNode = hashCodes[0];
+      var repNode = hashCodes[1];
        
       if(query.command == 'get') {
          var jsonObject = eval('(' + query.json + ')');
-         logger.info("GET [ node: " + hashCode + ", collection_name : " + query.collection + ", key : " + jsonObject[Object.keys(jsonObject)[0]] + " ] ");
+         logger.info("GET [ node: " + mainNode + ", collection_name : " + query.collection + ", key : " + jsonObject[Object.keys(jsonObject)[0]] + " ] ");
+         logger.info("GET REP [ node: " + repNode + ", collection_name : " + query.collection + ", key : " + jsonObject[Object.keys(jsonObject)[0]] + " ] ");
       } else if (query.command == 'put') {
          var jsonObject = eval('(' + query.json + ')');
-         logger.info("PUT [ node: " + hashCode + ", collection_name : " + query.collection + " ] ");
+         logger.info("PUT [ node: " + mainNode + ", collection_name : " + query.collection + " ] ");
+         logger.info("PUT REP [ node: " + repNode + ", collection_name : " + query.collection + " ] ");
       }
-      nodes[hashCode].sendMessage(query);
+      nodes[mainNode].sendMessage(query);
+      if (mainNode != repNode) {
+         nodes[repNode].sendMessage(query);
+      }
    }
 });
 

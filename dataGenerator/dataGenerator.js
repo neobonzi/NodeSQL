@@ -1,8 +1,7 @@
 var fs = require('fs'),
     faker = require('../node_modules/faker');
-var numCollections = 1000;
-var numRecords = 100000;
-var numGets = 100;
+var numCollections = 10;
+var numRecords = 100;
 var outputFile = '/home/jbilous/NodeSQL/dataGenerator/testData_' + numCollections + '_' + numRecords;
 var targetKeys = [];
 
